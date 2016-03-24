@@ -14,6 +14,14 @@ A route is any URI that you wish for your application to respond to. Routes must
 
 Note that in order to use this, you must configure your Web server to direct requests to the script where this code is placed (e.g., `.htaccess` for Apache).
 
+### Loading controllers
+
+You may set a default namespace from which to load classes by calling `Collection::setControllerNamespace()`. Just tell it which namespace is the base of your controllers.
+
+```php
+$router->setControllerNamespace('MyApp\\Controllers\\');
+```
+
 ### Dynamic routes
 
 You may pass arguments into your route by using one of the following tokens.
