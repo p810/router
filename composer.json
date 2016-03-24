@@ -1,0 +1,16 @@
+{
+    "name": "p810/router",
+    "description": "Respond to any requested URI in your application through a single point of entry.",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Payton",
+            "email": "hellopayton@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "p810\\Router\\": "src/"
+        }
+    }
+}
