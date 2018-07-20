@@ -106,7 +106,7 @@ class Collection
             return call_user_func_array($callback, $arguments);
         }
 
-        throw new UnmatchedRouteException;
+        throw new Exception\UnmatchedRouteException;
     }
 
 
