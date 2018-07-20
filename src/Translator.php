@@ -15,7 +15,6 @@ class Translator
         '{word}' => '\w+'
     ];
 
-
     /**
      * Generates a regular expression based on the string provided to this method.
      *
@@ -23,12 +22,12 @@ class Translator
      * @throws UnexpectedValueException if a token is found that isn't registered in Translator::$tokens.
      * @return string
      */
-    public function translate($route)
-    {
+    public function translate(string $route): string {
         $tokens = explode('/', $route);
 
-        $expression = [];
+        $lastToken = array_key_last($tokens);
 
+        $expression = [];
         foreach ($tokens as $key => $token) {
             $quantifier = '+';
             $segment    = '';
@@ -68,21 +67,12 @@ class Translator
         }
 
         $expression = implode('', $expression);
-
         $expression = '/^' . $expression . '$/';
 
         return $expression;
     }
 
-    
-    /**
-     * Determines if a special token is optional.
-     *
-     * @param string $token A special token coming from a route.
-     * @return boolean
-     */
-    protected function isOptional($token)
-    {
+    protected function isOptional(string $token): bool {
         $position = stripos($token, '?');
 
         if ($position === false) {

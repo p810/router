@@ -2,8 +2,7 @@
 
 namespace p810\Router;
 
-class Collection
-{
+class Collection {
     /**
      * A list of routes and their expressions/callbacks.
      *
@@ -12,58 +11,35 @@ class Collection
      */
     protected $routes = [];
 
-
     /**
-     * The default namespace within which to look for controllers that are registered as handlers.
+     * The default namespace within which to look for handlers.
      *
      * @access protected
      * @var array
      */
     protected $namespace = '';
 
-
-    /**
-     * Resolves an instance of p810\Amethyst\Router\Translator.
-     *
-     * @return void
-     */
-    function __construct()
-    {
+    function __construct() {
         $this->translator = new Translator;
     }
 
-
-    /**
-     * Translates a route and registers it to Collection::$routes with its expression and handler.
-     *
-     * @param string $route The route to translate and register.
-     * @param mixed $handler A Callable value or a string with a class name and method, in the form Class::method.
-     * @return void
-     */
-    public function register($route, $handler)
-    {
+    public function register(string $route, callable $handler): self {
         $route = trim($route, '/');
 
         if (empty($route)) {
             $this->routes['/'] = ['/^(\/)+$/m', $handler];
 
-            return;
+            return $this;
         }
 
         $expression = $this->translator->translate($route);
 
         $this->routes[$route] = [$expression, $handler];
+
+        return $this;
     }
 
-
-    /**
-     * Searches for a matching route and calls its handler if one is found.
-     *
-     * @param string $route The route to search for in Collection::$routes.
-     * @return mixed
-     */
-    public function match($route)
-    {
+    public function match(string $route) {
         if ($route !== '/') {
             $route = trim($route, '/');
         }
@@ -94,7 +70,7 @@ class Collection
             if (is_string($callback) && stripos($callback, '::') !== false) {
                 $callback = explode('::', $callback);
 
-                list($class, $method) = $callback;
+                [$class, $method] = $callback;
 
                 if (!empty($this->namespace)) {
                     $class = $this->namespace . $class;
@@ -103,21 +79,15 @@ class Collection
                 $callback = [new $class, $method];
             }
 
-            return call_user_func_array($callback, $arguments);
+            return $callback(...$arguments);
         }
 
         throw new Exception\UnmatchedRouteException;
     }
 
-
-    /**
-     * Overrides the value for Collection::$namespace.
-     *
-     * @param string $namespace The namespace to set the property value to.
-     * @return void
-     */
-    public function setControllerNamespace($namespace)
-    {
+    public function setControllerNamespace(string $namespace): self {
         $this->namespace = $namespace;
+
+        return $this;
     }
 }
