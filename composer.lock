@@ -1,0 +1,51 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "3aa41ed5821428a4f7e29462e7e7b7c2",
+    "packages": [
+        {
+            "name": "p810/array-fl",
+            "version": "1.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/p810/array-fl.git",
+                "reference": "310de7a086d0d41c4d9522b4cfe5a74a48809d48"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/p810/array-fl/zipball/310de7a086d0d41c4d9522b4cfe5a74a48809d48",
+                "reference": "310de7a086d0d41c4d9522b4cfe5a74a48809d48",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "src/functions.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Payton Bice",
+                    "email": "hellopayton@gmail.com"
+                }
+            ],
+            "description": "Provides a consolidated polyfill for array_key_first(), array_key_last(), and the unapproved functions array_value_first() and array_value_last().",
+            "time": "2018-07-18T14:15:55+00:00"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": [],
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": [],
+    "platform-dev": []
+}

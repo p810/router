@@ -12,5 +12,8 @@
         "psr-4": {
             "p810\\Router\\": "src/"
         }
+    },
+    "require": {
+        "p810/array-fl": "^1.1"
     }
 }
