@@ -25,8 +25,6 @@ class Translator
     public function translate(string $route): string {
         $tokens = explode('/', $route);
 
-        $lastToken = array_key_last($tokens);
-
         $expression = [];
         foreach ($tokens as $key => $token) {
             $quantifier = '+';
