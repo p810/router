@@ -95,5 +95,7 @@ class Translator
                 }
             }
         }
+
+        return $arguments;
     }
 }
