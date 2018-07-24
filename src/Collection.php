@@ -51,10 +51,6 @@ class Collection {
             $route = trim($route, '/');
         }
 
-        if (! in_array($method, self::VERBS)) {
-            throw new Exception\BadRequestException('Received an invalid HTTP method');
-        }
-
         foreach ($this->routes as $route => $data) {
             if (preg_match($data['expression'], $route, $matches) === false) {
                 continue;
