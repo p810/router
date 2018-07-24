@@ -4,17 +4,16 @@ namespace p810\Router;
 
 class Collection {
     /**
-     * A list of routes and their expressions/callbacks.
+     * A multi-dimensional array of routes mapped to an array of
+     * HTTP verbs to controllers.
      *
-     * @access protected
-     * @var array
+     * @var string[][]
      */
     protected $routes = [];
 
     /**
      * The default namespace within which to look for handlers.
      *
-     * @access protected
      * @var array
      */
     protected $namespace = '';
@@ -23,16 +22,30 @@ class Collection {
         $this->translator = new Translator;
     }
 
-    public function register(string $route, callable $handler): self {
+    public function register(string $route, string $method, callable $handler): self {
         $route = trim($route, '/');
 
+        if (empty($method) || ! in_array($method, self::VERBS)) {
+            throw new \InvalidArgumentException('Invalid HTTP method passed to Controller::register()');
+        }
+
+        /* Reverts 2294401 which removed this block accidentally.
+         * If $route is empty after trim(), it's the index. */
         if (empty($route)) {
-            throw new \InvalidArgumentException('Collection::register() is missing a route');
+            $this->routes['/'][$method] = ['/^(\/)+$/m', $handler];
+
+            return $this;
         }
 
         $expression = $this->translator->translate($route);
 
-        $this->routes[$route] = [$expression, $handler];
+        if (!isset($this->routes[$route])) {
+            $this->routes[$route] = [
+                'expression' => $expression
+            ];
+        }
+
+        $this->routes[$route][$method] = [$expression, $handler];
 
         return $this;
     }
@@ -43,7 +56,7 @@ class Collection {
         }
 
         foreach ($this->routes as $definition => $list) {
-            list($expression, $callback) = $list;
+            [$expression, $callback] = $list;
 
             if (preg_match($expression, $route, $matches) == false) {
                 continue;
@@ -54,7 +67,6 @@ class Collection {
             $tokens = explode('/', $definition);
             
             $arguments = [];
-
             foreach ($tokens as $key => $token) {
                 if (stripos($token, '{') !== false) {
                     if ($key > count($matches) - 1) {
