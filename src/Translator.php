@@ -73,11 +73,7 @@ class Translator
     protected function isOptional(string $token): bool {
         $position = stripos($token, '?');
 
-        if ($position === false) {
-            return false;
-        } elseif (is_numeric($position)) {
-            return true;
-        }
+        return is_numeric($position) ? true : false;
     }
 
     public function getArguments(string $route, array $matches): array {
