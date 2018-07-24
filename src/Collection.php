@@ -3,6 +3,8 @@
 namespace p810\Router;
 
 class Collection {
+    use ShorthandRegistrationMethods;
+
     /**
      * A multi-dimensional array of routes mapped to an array of
      * HTTP verbs to controllers.
@@ -42,18 +44,6 @@ class Collection {
         $this->routes[$route][$method] = [$expression, $handler];
 
         return $this;
-    }
-
-    public function get(string $route, callable $handler): self {
-        return $this->register($route, 'get', $handler);
-    }
-
-    public function post(string $route, callable $handler): self {
-        return $this->register($route, 'post', $handler);
-    }
-
-    public function all(string $route, callable $handler): self {
-        return $this->register($route, '*', $handler);
     }
 
     public function match(string $route, string $method) {
