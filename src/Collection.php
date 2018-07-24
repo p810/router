@@ -11,15 +11,9 @@ class Collection {
      */
     protected $routes = [];
 
-    /**
-     * The default namespace within which to look for handlers.
-     *
-     * @var array
-     */
-    protected $namespace = '';
-
     function __construct() {
-        $this->translator = new Translator;
+        $this->parser   = new Translator;
+        $this->resolver = new Resolver;
     }
 
     public function register(string $route, string $method, callable $handler): self {
@@ -37,7 +31,7 @@ class Collection {
             return $this;
         }
 
-        $expression = $this->translator->translate($route);
+        $expression = $this->parser->translate($route);
 
         if (!isset($this->routes[$route])) {
             $this->routes[$route] = [
@@ -59,56 +53,42 @@ class Collection {
     }
 
     public function all(string $route, callable $handler): self {
-        return $this->register($route, 'all', $handler);
+        return $this->register($route, '*', $handler);
     }
 
-    public function match(string $route) {
+    public function match(string $route, string $method) {
         if ($route !== '/') {
             $route = trim($route, '/');
         }
 
-        foreach ($this->routes as $definition => $list) {
-            [$expression, $callback] = $list;
+        if (! in_array($method, self::VERBS)) {
+            throw new Exception\BadRequestException('Received an invalid HTTP method');
+        }
 
-            if (preg_match($expression, $route, $matches) == false) {
+        foreach ($this->routes as $route => $data) {
+            if (preg_match($data['expression'], $route, $matches) === false) {
                 continue;
             }
 
-            array_shift($matches);
-
-            $tokens = explode('/', $definition);
-            
-            $arguments = [];
-            foreach ($tokens as $key => $token) {
-                if (stripos($token, '{') !== false) {
-                    if ($key > count($matches) - 1) {
-                        $arguments[] = null;
-                    } else {
-                        $arguments[] = trim($matches[$key], '/');
-                    }
+            if (! array_key_exists($method, $data)) {
+                if (! array_key_exists('*', $data)) {
+                    throw new Exception\BadRequestException('No handler is defined for this HTTP method');
+                } else {
+                    $method = '*';
                 }
             }
 
-            if (is_string($callback) && stripos($callback, '::') !== false) {
-                $callback = explode('::', $callback);
+            $args     = $this->parser->getArguments($route, $matches);
+            $callback = $this->routes[$route][$method];
 
-                [$class, $method] = $callback;
-
-                if (!empty($this->namespace)) {
-                    $class = $this->namespace . $class;
-                }
-
-                $callback = [new $class, $method];
-            }
-
-            return $callback(...$arguments);
+            return $this->resolver($callback, $args);
         }
 
         throw new Exception\UnmatchedRouteException;
     }
 
     public function setControllerNamespace(string $namespace): self {
-        $this->namespace = $namespace;
+        $this->resolver->setControllerNamespace($namespace);
 
         return $this;
     }
