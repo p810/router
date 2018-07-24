@@ -27,9 +27,7 @@ class Collection {
         $route = trim($route, '/');
 
         if (empty($route)) {
-            $this->routes['/'] = ['/^(\/)+$/m', $handler];
-
-            return $this;
+            throw new \InvalidArgumentException('Collection::register() is missing a route');
         }
 
         $expression = $this->translator->translate($route);
