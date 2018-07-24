@@ -79,4 +79,21 @@ class Translator
             return true;
         }
     }
+
+    public function getArguments(string $route, array $matches): array {
+        array_shift($matches);
+
+        $tokens = explode('/', $route);
+        
+        $arguments = [];
+        foreach ($tokens as $key => $token) {
+            if (stripos($token, '{') !== false) {
+                if ($key > count($matches) - 1) {
+                    $arguments[] = null;
+                } else {
+                    $arguments[] = trim($matches[$key], '/');
+                }
+            }
+        }
+    }
 }
