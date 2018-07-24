@@ -18,7 +18,7 @@ class Collection {
         $this->resolver = new Resolver;
     }
 
-    public function register(string $route, string $method, callable $handler): self {
+    public function register(string $route, string $method, $handler): self {
         $route = trim($route, '/');
 
         if (empty($method) || ! in_array($method, self::VERBS)) {

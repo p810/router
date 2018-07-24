@@ -3,7 +3,7 @@
 namespace p810\Router;
 
 class Resolver {
-    function __invoke(callable $handler, array $arguments) {
+    function __invoke($handler, array $arguments) {
         if (is_string($handler) && stripos($handler, '::') !== false) {
             [$class, $method] = explode('::', $handler);
 
